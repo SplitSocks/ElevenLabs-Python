@@ -3,7 +3,7 @@ import sys
 import json
 import requests
 
-def convert_to_audio(text=None, voice_id=None, api_key=None, speed=1.0, pitch=1.0):
+def convert_to_audio(text=None, voice_id=None, api_key=None, speed=1.0, pitch=1.0, output_folder="Audio"):
     api_url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
 
     headers = {
@@ -45,6 +45,7 @@ def convert_to_audio(text=None, voice_id=None, api_key=None, speed=1.0, pitch=1.
         f.write(audio_content)
 
     return audio_file
+    return output_file_path
 
 if __name__ == '__main__':
     voice_id = input("Enter voice id: ")

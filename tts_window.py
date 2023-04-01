@@ -1,12 +1,17 @@
 #Name tts_window.py
+# FFMPEG = https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z
+import sys
+print(sys.executable)
 
 import os
 import sys
 import requests
 import configparser
+import subprocess
 import tkinter as tk
 from tkinter import filedialog, ttk
-from TTSCurlConversion import convert_to_audio
+from GetAudio import convert_to_audio
+from pydub import AudioSegment
 
 class TTSWindow(tk.Frame):
     def __init__(self, master=None):
@@ -39,6 +44,10 @@ class TTSWindow(tk.Frame):
         self.notebook.add(self.tab5, text='Tab 5')
 
         # Create widgets for the first tab
+        # Initialized attributes
+        self.voice_name = None        
+        self.text_file_path = None
+        
         ## Select Text File
         self.select_button = tk.Button(self.tab1, text="Select Text File", command=self.select_file)
         self.select_button.pack(side="top", pady=10)        
@@ -51,14 +60,22 @@ class TTSWindow(tk.Frame):
         ## Enter Text Instead
         self.text_entry = tk.Entry(self.tab1, width=50)
         self.text_entry.pack(side="top", pady=10)        
-        ## Convert Button
+         ## Status Area
+        self.status_label = tk.Label(self.tab1, text="")
+        self.status_label.pack(side="top", pady=10)
+        ## Add this block to create the voice_name_label
+        self.voice_name_label = tk.Label(self.tab1, text="No voice selected")
+        self.voice_name_label.pack(side="top", pady=10)
+        ## Audio Request Button
         self.convert_button = tk.Button(self.tab1, text="Convert to Audio", command=self.convert_text)
         self.convert_button.pack(side="top", pady=10)
+        ## Convert to XMW
+        self.convert_mp3_to_xwm_button = tk.Button(self.tab1, text="Convert MP3 to XWM", command=self.convert_mp3_to_xwm)
+        self.convert_mp3_to_xwm_button.pack(pady=5)
         ## Status Aarea
         self.status_label = tk.Label(self.tab1, text="")
         self.status_label.pack(side="top", pady=10)
         
-        self.text_file_path = None  # Initialize text_file_path to None
 
         # Create widgets for the second tab
         ## Create widget for API key
@@ -74,6 +91,7 @@ class TTSWindow(tk.Frame):
         self.save_api_key_button.pack(side="top", pady=10)
         
         ## Voices Button and List
+        
         self.get_API_voices_button = tk.Button(self.tab2, text="Get Voices", command=self.get_API_voices)
         self.get_API_voices_button.pack(side="top", pady=10)
         
@@ -129,19 +147,31 @@ class TTSWindow(tk.Frame):
         if selected_index:
             selected_voice = self.voices_listbox.get(selected_index)
             self.voice_id = selected_voice.split(' ')[-1]  # Get the voice_id from the selected voice
+            self.voice_name = selected_voice.split(',')[0].split(': ')[1]  # Get the voice_name from the selected voice
+
             self.status_label.config(text=f"Selected Voice ID: {self.voice_id}")
+
+            # Update the voice_name_label text
+            self.voice_name_label.config(text=f"Selected Voice: {self.voice_name}")
+
         else:
             self.status_label.config(text="No voice selected.")
             
     ## Should move this to its own PY
     def get_API_voices(self):
+        api_key = self.get_api_key()
+        if not api_key:
+            self.voices_listbox.delete(0, tk.END)
+            self.voices_listbox.insert(tk.END, "No saved API key")
+            return
+
         url = 'https://api.elevenlabs.io/v1/voices'
         headers = {
             'accept': 'application/json',
-            'xi-api-key': self.get_api_key()
+            'xi-api-key': api_key
         }
 
-        response = requests.get(url, headers=headers)  # Add the headers parameter
+        response = requests.get(url, headers=headers)
 
         if response.status_code == 200:
             data = response.json()
@@ -153,8 +183,7 @@ class TTSWindow(tk.Frame):
             error_message = f"Error getting voices: {response.status_code}"
             self.voices_listbox.delete(0, tk.END)
             self.voices_listbox.insert(tk.END, error_message)
-
-        
+                
     def convert_text(self):
         api_key = self.get_api_key()
         headers = {"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}
@@ -177,12 +206,60 @@ class TTSWindow(tk.Frame):
             return
 
         try:
-            # Pass the voice_id to the convert_to_audio function
-            convert_to_audio(text=text, voice_id=self.voice_id)
+            # Pass the voice_id to the convert_to_audio function and store the output file path
+            output_file_path = convert_to_audio(text=text, voice_id=self.voice_id)
             self.status_label.config(text="Conversion successful")
+
+            # Store the output file path as an attribute
+            self.mp3_file_path = output_file_path
         except Exception as e:
             self.status_label.config(text=f"Error converting text to audio: {e}")
+            
+    # Conversion Process form MP3 to XWM
+    def convert_mp3_to_wav(self, mp3_path, wav_path):  # Added 'self' as the first parameter
+        try:
+            command = f"ffmpeg -i {mp3_path} {wav_path}"
+            subprocess.run(command, check=True, shell=True)
+            print(f"Successfully converted {mp3_path} to {wav_path}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error converting {mp3_path} to {wav_path}: {e}")
+            
+    def convert_wav_to_xwm(self, wav_path, xwm_path, xwmaencode_path):
+        try:
+            command = f'"{xwmaencode_path}" -i "{wav_path}" -o "{xwm_path}"'
+            result = subprocess.run(command, check=True, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            print(f"Output: {result.stdout.decode('utf-8')}")
+            print(f"Error output: {result.stderr.decode('utf-8')}")
+            print(f"Successfully converted {wav_path} to {xwm_path}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error converting {wav_path} to {xwm_path}: {e}")
+            print(f"Error output: {e.stderr.decode('utf-8')}")
 
+            
+    def perform_mp3_to_xwm_conversion(self, mp3_path, xwm_file_name, xwmaencode_path):
+        # Convert MP3 to WAV
+        wav_file_path = os.path.splitext(mp3_path)[0] + ".wav"
+        self.convert_mp3_to_wav(mp3_path, wav_file_path)
+
+        # Convert WAV to XWM
+        xwm_file_path = os.path.splitext(mp3_path)[0] + ".xwm"
+        self.convert_wav_to_xwm(wav_file_path, xwm_file_path, xwmaencode_path)
+    
+    def convert_mp3_to_xwm(self):
+        if not self.mp3_file_path:
+            self.status_label.config(text="Error: No MP3 file to convert")
+            return
+
+        xwm_file_name = os.path.splitext(os.path.basename(self.mp3_file_path))[0] + ".xwm"
+        xwmaencode_path = "C:\\Program Files (x86)\\Microsoft DirectX SDK (June 2010)\\Utilities\\bin\\x86\\xWMAEncode.exe"
+
+        try:
+            # Update the method call inside the convert_mp3_to_xwm method
+            self.perform_mp3_to_xwm_conversion(self.mp3_file_path, xwm_file_name, xwmaencode_path)
+            self.status_label.config(text="Successfully converted MP3 to XWM")
+        except Exception as e:
+            self.status_label.config(text=f"Error converting MP3 to XWM: {e}")
+            
 if __name__ == "__main__":
     root = tk.Tk()
     app = TTSWindow(master=root)
