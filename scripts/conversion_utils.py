@@ -9,10 +9,7 @@ def select_file():
     
 def clear_file():
     text_file_path = None
-    file_selected_label.config(text="Cleared File")
-
-
-       
+    file_selected_label.config(text="Cleared File")  
             
 def convert_text():
     api_key = self.get_api_key()

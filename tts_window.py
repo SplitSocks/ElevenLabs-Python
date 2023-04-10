@@ -6,18 +6,18 @@
 import os
 import sys
 import requests
-import configparser
 import tkinter as tk
+import scripts.api_utils
 from tkinter import messagebox
 from tkinter import filedialog, ttk
-from pydub import AudioSegment
+#from pydub import AudioSegment
 from scripts.required_utils import check_ffmpeg_avconv
 from scripts.audio_utils import convert_to_audio
-from scripts.api_utils import get_api_key, save_api_key, save_api_key_to_file
+from scripts.api_utils import set_api_key, get_api_key
 from scripts.conversion_utils import perform_mp3_to_wav_conversion, select_file, clear_file, convert_text
 from scripts.voices_utils import set_voice_id, get_API_voices
-
-
+from scripts.csv_utils import convert_csv, select_csv_file
+       
 # Suppress CMD errors
 import logging
 logging.getLogger("pydub.converter").setLevel(logging.ERROR)
@@ -30,13 +30,13 @@ class TTSWindow(tk.Frame):
         self.master = master
         self.master.title("Text-to-Speech Converter")        
         self.pack()  # Add missing pack method for the frame
-        saved_api_key = get_api_key()  # Load the saved API key
+        api_key = get_api_key()
         
         # Check for FFMPEG
-        if not check_ffmpeg_avconv():
-            messagebox.showwarning("FFmpeg or Avconv not found", "Please install FFmpeg or Avconv and add it to your system's PATH. This program will now close")
-            self.master.destroy()
-            sys.exit("FFmpeg not found. Please install FFmpeg and try again.")
+        #if not check_ffmpeg_avconv():
+        #    messagebox.showwarning("FFmpeg or Avconv not found", "Please install FFmpeg or Avconv and add it to #your system's PATH. This program will now close")
+        #    self.master.destroy()
+        #    sys.exit("FFmpeg not found. Please install FFmpeg and try again.")
         
         # Create a custom style for the Notebook tabs
         custom_notebook_style = ttk.Style()
@@ -56,10 +56,10 @@ class TTSWindow(tk.Frame):
 
         # Add tabs to the notebook
         self.notebook.add(self.tab1, text='Main')
-        self.notebook.add(self.tab2, text='API and VoiceID')
-        self.notebook.add(self.tab3, text='Tab 3')
+        self.notebook.add(self.tab2, text='Voices')
+        self.notebook.add(self.tab3, text='CSV Conversion')
         self.notebook.add(self.tab4, text='Tab 4')
-        self.notebook.add(self.tab5, text='Tab 5')
+        self.notebook.add(self.tab5, text='API Setup')
 
         # Create widgets for the first tab
         # Initialized attributes
@@ -96,38 +96,93 @@ class TTSWindow(tk.Frame):
         
 
         # Create widgets for the second tab
-        ## Create widget for API key
-        self.api_key_label = tk.Label(self.tab2, text="API Key:")
-        self.api_key_label.pack(side="top", pady=10)
+        ##Columns
+        # create two columns in the second tab
+        self.tab2_left = tk.Frame(self.tab2)
+        self.tab2_left.pack(side="left", padx=10, pady=10, fill="both", expand=True)
+
+        self.tab2_right = tk.Frame(self.tab2)
+        self.tab2_right.pack(side="left", padx=10, pady=10, fill="both", expand=True)
         
-        saved_api_key = get_api_key()  # Load the saved API key
-        self.api_key_entry = tk.Entry(self.tab2, width=50)
-        self.api_key_entry.insert(0, saved_api_key)  # Set the saved API key as the default value
-        self.api_key_entry.pack(side="top", pady=10)
-        
-        self.save_api_key_button = tk.Button(self.tab2, text="Save API Key", command=save_api_key_to_file)
-        self.save_api_key_button.pack(side="top", pady=10)
-        
-        ## Voices Button and List
-        
-        self.get_API_voices_button = tk.Button(self.tab2, text="Get Voices", command=get_API_voices)
+        # Left Column
+        ## Get API Button
+        self.get_API_voices_button = tk.Button(self.tab2_left, text="Get Voices", command=get_API_voices)
         self.get_API_voices_button.pack(side="top", pady=10)
+        ## Add a button to set the selected voice_id
+        self.set_voice_id_button = tk.Button(self.tab2_left, text="Set Voice ID", command=set_voice_id)
+        self.set_voice_id_button.pack(side="top", pady=10)
         
         ## Add these lines to create a Listbox for voices and a Scrollbar
-        self.voices_listbox = tk.Listbox(self.tab2, width=50, height=10)
+        self.voices_listbox = tk.Listbox(self.tab2_right, width=50, height=10)
         self.voices_listbox.pack(side="left", pady=10)
-        self.voices_scrollbar = tk.Scrollbar(self.tab2)
+        self.voices_scrollbar = tk.Scrollbar(self.tab2_right)
         self.voices_scrollbar.pack(side="left", fill="y")
 
         ## Configure the Listbox to use the Scrollbar
         self.voices_listbox.config(yscrollcommand=self.voices_scrollbar.set)
         self.voices_scrollbar.config(command=self.voices_listbox.yview)
 
-        ## Add a button to set the selected voice_id
-        self.set_voice_id_button = tk.Button(self.tab2, text="Set Voice ID", command=set_voice_id)
-        self.set_voice_id_button.pack(side="top", pady=10)
+
 
         self.voice_id = None  # Initialize the voice_id variable
+        
+        # 3rd Tab
+        ## Create the widgets for the CSV conversion tab
+        csv_file_label = ttk.Label(self.tab3, text="CSV File:")
+        self.csv_file_entry = ttk.Entry(self.tab3)
+        csv_file_button = ttk.Button(self.tab3, text="Select CSV File", command=select_csv_file)
+
+        csv_voice_id_label = ttk.Label(self.tab3, text="Voice ID:")
+        self.csv_voice_id_entry = ttk.Entry(self.tab3)
+
+        csv_output_folder_label = ttk.Label(self.tab3, text="Output Folder:")
+        self.csv_output_folder_entry = ttk.Entry(self.tab3)
+
+        csv_convert_button = ttk.Button(self.tab3, text="Convert CSV", command=convert_csv)
+
+        ## Add the widgets to the CSV conversion tab
+        csv_file_label.grid(row=0, column=0, padx=5, pady=5, sticky=tk.W)
+        self.csv_file_entry.grid(row=0, column=1, padx=5, pady=5, sticky=tk.W+tk.E)
+        csv_file_button.grid(row=0, column=2, padx=5, pady=5)
+
+        csv_voice_id_label.grid(row=1, column=0, padx=5, pady=5, sticky=tk.W)
+        self.csv_voice_id_entry.grid(row=1, column=1, padx=5, pady=5, sticky=tk.W+tk.E)
+
+        csv_output_folder_label.grid(row=2, column=0, padx=5, pady=5, sticky=tk.W)
+        self.csv_output_folder_entry.grid(row=2, column=1, padx=5, pady=5, sticky=tk.W+tk.E)
+
+        csv_convert_button.grid(row=3, column=0, columnspan=3, padx=5, pady=5)
+        
+        #Tab 5 - API
+        ## Create widget for API key
+        import configparser
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        
+        self.api_key_label = tk.Label(self.tab5, text=f"Current API Key: {get_api_key()}")
+        self.api_key_label.pack(side="top", pady=10)
+         
+        self.api_key_entry = tk.Entry(self.tab5, width=50)
+        self.api_key_entry.insert(0,"Enter new API Key")
+        self.api_key_entry.pack(side="top", pady=10)  
+        
+        def save_api_key():
+            # get the text entered in the Entry widget
+            new_api_key = self.api_key_entry.get()
+            # set the new API key in the ConfigParser object
+            config.set('API_KEYS', 'ElevenLABS', new_api_key)
+            # write the changes back to the INI file
+            with open('config.ini', 'w') as configfile:
+                config.write(configfile)
+            #update label
+            self.api_key_label.config(text=f"Current API Key: {new_api_key}")
+            self.api_key_entry.delete('0', 'end')
+       
+        self.save_api_key_button = tk.Button(self.tab5, text="Save API Key", command=save_api_key)
+        self.save_api_key_button.pack(side="top", pady=10)
+        ## Status Aarea
+        self.api_status_label = tk.Label(self.tab5, text="")
+        self.api_status_label.pack(side="top", pady=10)
                
 if __name__ == "__main__":
     root = tk.Tk()
