@@ -10,12 +10,12 @@ import configparser
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import filedialog, ttk
-from required_utils import check_ffmpeg_avconv
 from pydub import AudioSegment
-from audio_utils import convert_to_audio
-from api_utils import get_api_key, save_api_key, save_api_key_to_file
-from conversion_utils import perform_mp3_to_wav_conversion, select_file, clear_file, convert_text
-from voices_utils import set_voice_id, get_API_voices
+from scripts.required_utils import check_ffmpeg_avconv
+from scripts.audio_utils import convert_to_audio
+from scripts.api_utils import get_api_key, save_api_key, save_api_key_to_file
+from scripts.conversion_utils import perform_mp3_to_wav_conversion, select_file, clear_file, convert_text
+from scripts.voices_utils import set_voice_id, get_API_voices
 
 
 # Suppress CMD errors

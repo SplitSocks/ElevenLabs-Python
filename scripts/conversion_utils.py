@@ -5,11 +5,11 @@ from pydub import AudioSegment
       
 def select_file():
     text_file_path = filedialog.askopenfilename(initialdir="Text", title="Select Text File", filetypes=(("Text files", "*.txt"), ("All files", "*.*")))
-    file_selected_label.config(text=f"Selected file: {os.path.basename(self.text_file_path)}")
+    file_selected_label.config(text=f"Selected file: {os.path.basename(text_file_path)}")
     
 def clear_file():
-    self.text_file_path = None
-    self.file_selected_label.config(text="Cleared File")
+    text_file_path = None
+    file_selected_label.config(text="Cleared File")
 
 
        
