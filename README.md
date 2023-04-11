@@ -18,3 +18,10 @@ out_path = I utilized the out_path for the name of the file when exported, so ju
 
 voice_id, text, out_path
 EXAVITQu4vr4xnSDxMaL,"I like butts", .\000323
+
+When you open the GUI enter your API on the API tab and save it.
+You can look at the voices tab for retrieval of the ID
+CSV tab is the magic. 
+1. Pick the CSV (properly formated) 
+2. then select the output folder. 
+3. Click convert and watch your computer scream while it's processed. (My mouse stuttered as it processed)
