@@ -33,24 +33,24 @@ def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0
     audio_folder = output
     
     # Save the MP3 content to a temporary file
-        with open("temp.mp3", "wb") as f:
-            f.write(audio_content)
+    with open("temp.mp3", "wb") as f:
+        f.write(audio_content)
 
-        # Perform MP3 to WAV conversion
-        sound = AudioSegment.from_mp3("temp.mp3")
+    # Perform MP3 to WAV conversion
+    sound = AudioSegment.from_mp3("temp.mp3")
 
-        # Set the output file name using csv_out_path
-        if csv_out_path:
-            output_file_name = f"{csv_out_path}.wav"
-        else:
-            output_file_name = "output.wav"
+    # Set the output file name using csv_out_path
+    if csv_out_path:
+        output_file_name = f"{csv_out_path}.wav"
+    else:
+        output_file_name = "output.wav"
 
-        sound.export(output_file_name, format="wav")
+    sound.export(output_file_name, format="wav")
 
-        # Remove the temporary MP3 file
-        os.remove("temp.mp3")
+    # Remove the temporary MP3 file
+    os.remove("temp.mp3")
 
-        return output_file_name
+    return output_file_name
 
 if __name__ == '__main__':
     voice_id = input("Enter voice id: ")
@@ -59,6 +59,7 @@ if __name__ == '__main__':
         sys.exit()
 
     text = "Hello, how are you doing?"
-    audio_file = convert_to_audio(text=text, voice_id=voice_id)
+    csv_out_path = input("Enter output file name (without extension): ")
+    audio_file = convert_to_audio(text=text, voice_id=voice_id, csv_out_path=csv_out_path)
 
     print(f"Audio file saved as: {audio_file}")
