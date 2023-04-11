@@ -15,10 +15,10 @@ from scripts.voices_utils import set_voice_id, get_voices
 from scripts.csv_utils import convert_csv, select_csv_file, select_output_folder
 
 # Suppress CMD errors
-import logging
-logging.getLogger("pydub.converter").setLevel(logging.ERROR)
-import warnings
-warnings.filterwarnings("ignore", category=RuntimeWarning)
+#import logging
+#logging.getLogger("pydub.converter").setLevel(logging.ERROR)
+#import warnings
+#warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 class TTSWindow(tk.Frame):
     def __init__(self, master=None):

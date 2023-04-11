@@ -3,10 +3,12 @@ import os
 import sys
 import json
 import requests
+from pydub import AudioSegment  
 from scripts.api_utils import get_api_key
 
 def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0.25, output=None, csv_out_path=None):
- 
+    api_url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+    
     headers = {
         "accept": "audio/mpeg",
         "xi-api-key": get_api_key(),
