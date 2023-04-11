@@ -65,6 +65,6 @@ def convert_csv():
                 text = row['text']
                 voice_id = row['voice_id']
                 out_path = row['out_path']
-                convert_to_audio(text=text, voice_id=voice_id, csv_out_path=out_path, output=csv_output_folder)     
+                convert_to_audio(text=text, voice_id=voice_id, csv_out_path=out_path, out_folder=csv_output_folder)     
     else:
         print("No CSV file selected")

@@ -6,7 +6,7 @@ import requests
 from pydub import AudioSegment  
 from scripts.api_utils import get_api_key
 
-def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0.25, output=None, csv_out_path=None):
+def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0.25, out_folder=None, csv_out_path=None):
     api_url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
     
     headers = {
@@ -32,7 +32,7 @@ def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0
 
     # get the content of the audio file and save it to disk
     audio_content = response.content
-    audio_folder = output
+    audio_folder = out_folder
     
     # Save the MP3 content to a temporary file
     with open("temp.mp3", "wb") as f:
@@ -45,14 +45,20 @@ def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0
     if csv_out_path:
         output_file_name = f"{csv_out_path}.wav"
     else:
-        output_file_name = "output.wav"
+        output_file_name = output_file_name
 
-    sound.export(output_file_name, format="wav")
+   # Combine the output folder path with the output file name
+    if out_folder:
+        output_file_path = os.path.join(out_folder, output_file_name)
+    else:
+        output_file_path = output_file_name
+
+    sound.export(output_file_path, format="wav")
 
     # Remove the temporary MP3 file
     os.remove("temp.mp3")
 
-    return output_file_name
+    return output_file_path
 
 if __name__ == '__main__':
     voice_id = input("Enter voice id: ")
