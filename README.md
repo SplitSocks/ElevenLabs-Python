@@ -1,17 +1,20 @@
 # ElevenLabs-Python
-Crafted GUI for ElevenLabs via Python scripting.
+Crafting a GUI for ElevenLabs Useage.
 
-I am a fledgling scripter. I barely understand what I am doing.
+I am a fledgling scripter. I thought ElevenLabs was friggin awesome so I wanted an easy to use GUI. I love Skyrim and Fallout 4 mods and hoped ElevenLabs would bring a new spark.
 
-This python script is being developed strictly for Fallout 4 voice lines. It could easily be used for other machinations. 
-Let me know any ideas that I can add.
+Currently, this GUI/script is for exported Dialouge lines from xEDIT or the CreationKit.
 
+Download the repository.
+Open cmd in folder type "python tts_window.py"
 
-open cmd in folder type python tts_window.py
-Everything should be self explanatory.
+You may need to install a few pip libraries. I will eventually paste all that here. Forgive any slowness.
 
-This is for converting Fallout 4 dialog exported to csv. 
+CSV setup is below. If any headers are missing, the script won't fire.
 
-CSV setup like
-voice_id, text, out_path (any other headers here will be ignored)
+voice_id = The voice you want to use for this line. The GUI will allow you to pull a list of voices on your ElevenLabs account for easy retreival.
+text = This is where you place the text you want parsed by ElevenLabs
+out_path = I utilized the out_path for the name of the file when exported, so just put the name or w/e is exported to this column by the process.
+
+voice_id, text, out_path
 EXAVITQu4vr4xnSDxMaL,"I like butts", .\000323
