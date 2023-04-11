@@ -16,7 +16,7 @@ voice_id = The voice you want to use for this line. The GUI will allow you to pu
 text = This is where you place the text you want parsed by ElevenLabs<br>
 out_path = I utilized the out_path for the name of the file when exported, so just put the name or w/e is exported to this column by the process.<br>
 
-voice_id, text, out_path
+voice_id, text, out_path<br>
 EXAVITQu4vr4xnSDxMaL,"I like butts", .\000323
 
 When you open the GUI enter your API on the API tab and save it.
