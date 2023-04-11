@@ -6,8 +6,7 @@ import requests
 from scripts.api_utils import get_api_key
 
 def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0.25, output=None, csv_out_path=None):
-    api_url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
-
+ 
     headers = {
         "accept": "audio/mpeg",
         "xi-api-key": get_api_key(),
@@ -32,16 +31,26 @@ def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0
     # get the content of the audio file and save it to disk
     audio_content = response.content
     audio_folder = output
-    if not os.path.exists(audio_folder):
-        os.makedirs(audio_folder)
-    audio_file = os.path.join(audio_folder, f"{csv_out_path}.mp3")
+    
+    # Save the MP3 content to a temporary file
+        with open("temp.mp3", "wb") as f:
+            f.write(audio_content)
 
-    # write the audio content to the file
-    with open(audio_file, "wb") as f:
-        f.write(audio_content)
+        # Perform MP3 to WAV conversion
+        sound = AudioSegment.from_mp3("temp.mp3")
 
-    return audio_file
-    return output_file_path
+        # Set the output file name using csv_out_path
+        if csv_out_path:
+            output_file_name = f"{csv_out_path}.wav"
+        else:
+            output_file_name = "output.wav"
+
+        sound.export(output_file_name, format="wav")
+
+        # Remove the temporary MP3 file
+        os.remove("temp.mp3")
+
+        return output_file_name
 
 if __name__ == '__main__':
     voice_id = input("Enter voice id: ")

@@ -41,7 +41,7 @@ class TTSWindow(tk.Frame):
         self.notebook = ttk.Notebook(self, style="CustomNotebook.TNotebook")
         self.notebook.pack(fill='both', expand=True)
 
-        # Create five tabs
+        # Create tabs
         self.tab1 = tk.Frame(self.notebook)
         self.tab2 = tk.Frame(self.notebook)
         self.tab3 = tk.Frame(self.notebook)
@@ -122,8 +122,8 @@ class TTSWindow(tk.Frame):
         self.voices_scrollbar.config(command=self.voices_listbox.yview)
         
         ## Add a button to set the selected voice_id
-        self.set_voice_id_button = tk.Button(self.tab2, text="Set Voice ID", command=lambda: set_voice_id(self))
-        self.set_voice_id_button.grid(row=3, column=1, pady=10, sticky=tk.W+tk.E)
+        #self.set_voice_id_button = tk.Button(self.tab2, text="Set Voice ID", command=lambda: set_voice_id(self))
+        #self.set_voice_id_button.grid(row=3, column=1, pady=10, sticky=tk.W+tk.E)
 
         # Initialize the voice_id variable
         self.voice_id = None

@@ -42,7 +42,7 @@ def convert_text():
     except Exception as e:
         self.status_label.config(text=f"Error converting text to audio: {e}")
         
-def perform_mp3_to_wav_conversion():
+def perform_mp3_to_wav_conversion(audio_content):
     input_file_path = filedialog.askopenfilename(defaultextension=".mp3", filetypes=[("MP3 files", "*.mp3"), ("All files", "*.*")])
     if input_file_path:
         output_file_path = filedialog.asksaveasfilename(defaultextension=".wav", filetypes=[("WAV files", "*.wav"), ("All files", "*.*")])
