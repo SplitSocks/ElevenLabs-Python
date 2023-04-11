@@ -9,3 +9,9 @@ Let me know any ideas that I can add.
 
 open cmd in folder type python tts_window.py
 Everything should be self explanatory.
+
+This is for converting Fallout 4 dialog exported to csv. 
+
+CSV setup like
+voice_id, text, out_path (any other headers here will be ignored)
+EXAVITQu4vr4xnSDxMaL,"I like butts", .\000323
