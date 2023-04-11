@@ -3,3 +3,12 @@ __pycache__/required_utils.cpython-311.pyc
 __pycache__/GetAudio.cpython-311.pyc
 __pycache__/conversion_utils.cpython-311.pyc
 __pycache__/api_utils.cpython-311.pyc
+config.ini
+__pycache__/tts_window.cpython-311.pyc
+scripts/__pycache__/api_utils.cpython-310.pyc
+scripts/__pycache__/audio_utils.cpython-310.pyc
+scripts/__pycache__/conversion_utils.cpython-310.pyc
+scripts/__pycache__/csv_utils.cpython-310.pyc
+scripts/__pycache__/required_utils.cpython-310.pyc
+scripts/__pycache__/voices_utils.cpython-310.pyc
+tts_window.py expanded (Do Not Use).bak

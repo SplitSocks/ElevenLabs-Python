@@ -10,7 +10,7 @@ def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0
 
     headers = {
         "accept": "audio/mpeg",
-        "xi-api-key": get_api_key(),
+        "xi-api-key": get_api_key,
         "Content-Type": "application/json",
     }
 

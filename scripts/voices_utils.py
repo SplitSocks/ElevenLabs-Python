@@ -3,7 +3,7 @@ import requests
 from scripts.api_utils import get_api_key
 from tkinter import ttk
 
-def set_voice_id():
+def set_voice_id(self):
     selected_index = self.voices_listbox.curselection()
     if selected_index:
         selected_voice = self.voices_listbox.get(selected_index)
@@ -17,9 +17,13 @@ def set_voice_id():
 
     else:
         self.status_label.config(text="No voice selected.")
+        
+def create_get_voices_button(tts_window_instance):
+    tts_window_instance.get_API_voices_button = tk.Button(tts_window_instance.tab2_left, text="Get Voices", command=tts_window_instance.get_voices)
+    tts_window_instance.get_API_voices_button.pack(side="top", pady=10)
 		
-def get_API_voices():
-    api_key = self.get_api_key()
+def get_voices(self, tk):
+    api_key = get_api_key()
     if not api_key:
         self.voices_listbox.delete(0, tk.END)
         self.voices_listbox.insert(tk.END, "No saved API key")
