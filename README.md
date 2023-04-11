@@ -12,9 +12,9 @@ You may need to install a few pip libraries. I will eventually paste all that he
 
 CSV setup is below. If any headers are missing, the script won't fire.
 
-voice_id = The voice you want to use for this line. The GUI will allow you to pull a list of voices on your ElevenLabs account for easy retreival.
-text = This is where you place the text you want parsed by ElevenLabs
-out_path = I utilized the out_path for the name of the file when exported, so just put the name or w/e is exported to this column by the process.
+voice_id = The voice you want to use for this line. The GUI will allow you to pull a list of voices on your ElevenLabs account for easy retreival. <br>
+text = This is where you place the text you want parsed by ElevenLabs<br>
+out_path = I utilized the out_path for the name of the file when exported, so just put the name or w/e is exported to this column by the process.<br>
 
 voice_id, text, out_path
 EXAVITQu4vr4xnSDxMaL,"I like butts", .\000323
