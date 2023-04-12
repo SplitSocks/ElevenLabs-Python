@@ -95,11 +95,11 @@ class TTSWindow(tk.Frame):
         csv_convert_button.grid(row=6, column=1, columnspan=2, padx=5, pady=5)
        
         # Tab 2 - Voices
-        voicesHeader = tk.Label(self.tab2, text="Set the voice below you'd like to use for the Main tab", font=("Arial", 12), pady=10, wraplength=400)
+        voicesHeader = tk.Label(self.tab2, text="View your voices available on Eleven Labs.", font=("Arial", 12), pady=10, wraplength=400)
         voicesHeader.grid(row=0, column=1)
 
         ## Get Voices Button
-        self.get_voices_button = tk.Button(self.tab2, text="Get Voices", command=lambda: get_voices(self, tk))
+        self.get_voices_button = tk.Button(self.tab2, text="View Voices", command=lambda: get_voices(self, tk))
         self.get_voices_button.grid(row=1, column=1, pady=10, sticky=tk.W+tk.E)
 
         ## Add these lines to create a Listbox for voices and a Scrollbar
