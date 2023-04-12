@@ -59,15 +59,3 @@ def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0
     os.remove("temp.mp3")
 
     return output_file_path
-
-if __name__ == '__main__':
-    voice_id = input("Enter voice id: ")
-    if not voice_id:
-        print("No voice ID")
-        sys.exit()
-
-    text = "Hello, how are you doing?"
-    csv_out_path = input("Enter output file name (without extension): ")
-    audio_file = convert_to_audio(text=text, voice_id=voice_id, csv_out_path=csv_out_path)
-
-    print(f"Audio file saved as: {audio_file}")

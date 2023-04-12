@@ -1,24 +1,20 @@
+import warnings 
+warnings.filterwarnings("ignore", message="Couldn't find ffmpeg or avconv - defaulting to ffmpeg, but may not work", category=RuntimeWarning)
+
+# Imports
 import os
 import sys
 import requests
 import tkinter as tk
-import scripts.api_utils
 from tkinter import messagebox
 from tkinter import filedialog, ttk
-from pydub import AudioSegment
 from tqdm import tqdm
-from scripts.required_utils import check_ffmpeg_avconv
+from scripts.required_utils import check_ffmpeg_avconv, download_ffmpeg_installer, add_ffmpeg_to_path
 from scripts.audio_utils import convert_to_audio
 from scripts.api_utils import set_api_key, get_api_key
-from scripts.conversion_utils import perform_mp3_to_wav_conversion, select_file, clear_file, convert_text
-from scripts.voices_utils import set_voice_id, get_voices
+from scripts.voices_utils import get_voices
 from scripts.csv_utils import convert_csv, select_csv_file, select_output_folder
 
-# Suppress CMD errors
-#import logging
-#logging.getLogger("pydub.converter").setLevel(logging.ERROR)
-#import warnings
-#warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 class TTSWindow(tk.Frame):
     def __init__(self, master=None):
@@ -78,12 +74,12 @@ class TTSWindow(tk.Frame):
         csv_output_folder_button = ttk.Button(self.tab1, text="Select Output Folder", command=lambda: select_output_folder(self))
         self.csv_output_folder_entry = ttk.Entry(self.tab1, state="readonly")
         
-        def update_output_folder_entry(self):
-                output_folder = csv_utils.select_output_folder()
-                if output_folder:
-                    self.csv_output_folder_entry.delete(0, tk.END)
-                    self.csv_output_folder_entry.insert(0, output_folder)
-                    self.csv_output_folder_entry.config(state='readonly')
+        def update_output_folder_entry():
+                    output_folder = select_output_folder()
+                    if output_folder:
+                        self.csv_output_folder_entry.delete(0, tk.END)
+                        self.csv_output_folder_entry.insert(0, output_folder)
+                        self.csv_output_folder_entry.config(state='readonly')
                     
         csv_convert_button = ttk.Button(self.tab1, text="Convert CSV", command=convert_csv)
         
@@ -161,6 +157,28 @@ class TTSWindow(tk.Frame):
         self.api_status_label.grid(row=3, column=1, pady=10, sticky=tk.W+tk.E)
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = TTSWindow(master=root)
-    app.mainloop()
+    if not check_ffmpeg_avconv():
+        print("FFmpeg not found.")
+        choice = input("Do you want to download the FFmpeg installer? (Windows 10/11 ONLY) Otherwise NO (y/n): ")
+
+        if choice.lower() == "y":
+            print("Downloading FFmpeg installer...")
+            if download_ffmpeg_installer():
+                print("FFmpeg installer downloaded successfully.")
+                # Assuming you have 7z installed, extract the downloaded file
+                # subprocess.run(["7z", "x", "ffmpeg-release-essentials.zip"])
+                os.remove("utility/ffmpeg-release-essentials.zip")
+                add_ffmpeg_to_path()
+                root = tk.Tk()
+                app = TTSWindow(master=root)
+                app.mainloop()
+            else:
+                print("Failed to download FFmpeg installer. Please try again later.")
+        else:
+            print("Please install FFmpeg before running the application.")
+            sys.exit(1)
+    else:
+        print("FFmpeg is already installed.")
+        root = tk.Tk()
+        app = TTSWindow(master=root)
+        app.mainloop()
