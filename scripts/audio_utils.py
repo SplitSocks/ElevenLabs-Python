@@ -43,7 +43,11 @@ def convert_to_audio(text=None, voice_id=None, api_key=None, speed=0.25, pitch=0
 
     # Set the output file name using csv_out_path
     if csv_out_path:
-        output_file_name = f"{csv_out_path}.wav"
+        file_name, file_extension = os.path.splitext(csv_out_path)
+        if file_extension.lower() != '.wav':
+            output_file_name = f"{csv_out_path}.wav"
+        else:
+            output_file_name = csv_out_path
     else:
         output_file_name = output_file_name
 

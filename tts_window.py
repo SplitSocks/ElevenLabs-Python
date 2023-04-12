@@ -24,10 +24,6 @@ class TTSWindow(tk.Frame):
         self.pack(fill=tk.BOTH, expand=True)
         api_key = get_api_key()
         
-        # Initialized attributes
-        self.voice_name = None
-        self.text_file_path = None
-        
         # Create a custom style for the Notebook tabs
         custom_notebook_style = ttk.Style()
         custom_notebook_style.configure("CustomNotebook.TNotebook", padding=[5, 5, 5, 5])
@@ -165,8 +161,7 @@ if __name__ == "__main__":
             print("Downloading FFmpeg installer...")
             if download_ffmpeg_installer():
                 print("FFmpeg installer downloaded successfully.")
-                # Assuming you have 7z installed, extract the downloaded file
-                # subprocess.run(["7z", "x", "ffmpeg-release-essentials.zip"])
+                # Extract the downloaded file
                 os.remove("utility/ffmpeg-release-essentials.zip")
                 add_ffmpeg_to_path()
                 root = tk.Tk()
@@ -174,11 +169,14 @@ if __name__ == "__main__":
                 app.mainloop()
             else:
                 print("Failed to download FFmpeg installer. Please try again later.")
-        else:
+                print("Go to https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip to download and extract it yourself.")
+                print("Be sure to add the ffmpeg/bin to your path")
             print("Please install FFmpeg before running the application.")
+            print("Go to https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip to download and extract it yourself.")
+            print("Be sure to add the ffmpeg/bin to your path")
             sys.exit(1)
     else:
-        print("FFmpeg is already installed.")
+        print("FFmpeg is installed. Launching GUI")
         root = tk.Tk()
         app = TTSWindow(master=root)
         app.mainloop()

@@ -60,3 +60,10 @@ utility/ffmpeg/bin/ffmpeg.exe
 *.bak
 *.bak
 *.bak
+config.ini
+scripts/__pycache__/api_utils.cpython-311.pyc
+scripts/__pycache__/audio_utils.cpython-311.pyc
+scripts/__pycache__/csv_utils.cpython-311.pyc
+scripts/__pycache__/required_utils.cpython-311.pyc
+scripts/__pycache__/voices_utils.cpython-311.pyc
+config.ini
