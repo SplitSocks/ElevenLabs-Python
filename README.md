@@ -8,7 +8,7 @@ Currenlty this will only process a formated CSV and spit out the audio. I plan t
 3. Open CMD from the main folder you downloaded and type "python tts_window.py"
 4. This requires FFMPEG. Script will download/install it for you if you do not have it installed.
 5. You may need to install a few pip libraries. I will eventually paste all that here. Forgive any slowness.
-  5a. pip install requests
+5a. pip install requests
 6. Enter your ElevenLabs API on the API Tab and save it.
 7. Voices tab is strictly for seeing the voices you have available.
 8. CSV Tab is where the magic happens.
