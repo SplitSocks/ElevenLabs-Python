@@ -1,9 +1,26 @@
 import warnings 
 warnings.filterwarnings("ignore", message="Couldn't find ffmpeg or avconv - defaulting to ffmpeg, but may not work", category=RuntimeWarning)
 
-# Imports
-import os
+# Initial Imports
 import sys
+import subprocess
+
+#Checking for proper packages
+required_packages = ["requests", "tqdm", "pydub"]
+
+for package in required_packages:
+    try:
+        __import__(package)
+    except ImportError:
+        print(f"{package} not found. Attempting to install {package}...")
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        except subprocess.CalledProcessError:
+            print(f"Failed to install {package}. Please install it manually using 'pip install {package}' and try again.")
+            sys.exit(1)
+
+# Imports continued
+import os
 import requests
 import tkinter as tk
 from tkinter import messagebox
