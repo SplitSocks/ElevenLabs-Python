@@ -21,3 +21,6 @@ voice_id, text, out_path<br>
 EXAVITQu4vr4xnSDxMaL,"I like butts", .\000323
 
 I will edit this ReadMe to be more comprehensive as time goes on.
+
+
+Word of warning. If ElevenLab servers are busy and your account does not have priority, you may experience an error or more depending on how large your CSV file is. Just find the last audio exported and remove the already created voicelines from the CSV then fire it again later when the servers aren't busy.
